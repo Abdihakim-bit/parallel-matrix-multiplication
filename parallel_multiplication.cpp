@@ -56,7 +56,15 @@ void sequential_matrix_multiply(int** Matrix_A, unsigned int num_rows_a, unsigne
 void  parallel_helper(int** Matrix_A, unsigned int start_row, unsigned int end_row, unsigned int num_cols_a,
     int** Matrix_B, unsigned int num_rows_b, unsigned int num_cols_b,
     int** Result) {
-
+    for (unsigned int i = start_row; i < end_row; i++) {
+        for (unsigned int j = 0; j < num_cols_b; j++) {
+            int sum = 0;
+            for (unsigned int k = 0; k < num_cols_a; k++) {
+                sum += Matrix_A[i][k] * Matrix_B[k][j];
+            }
+            Result[i][j] = sum;
+        }
+    }
 }
 
 //Divide rows among the threads and call helper function to do the multiplication
