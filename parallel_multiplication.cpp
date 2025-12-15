@@ -87,6 +87,20 @@ void parallel_matrix_multiply(int** Matrix_A, unsigned int num_rows_a, unsigned 
     }
 }
 
+//Compare the two result matrices
+bool compare_matrices(int** MatrixA, int** MatrixB, unsigned int rows, unsigned int cols) {
+    for (unsigned int i = 0; i < rows; i++) {
+        for (unsigned int j = 0; j < cols; j++) {
+            if (MatrixA[i][j] != MatrixB[i][j]) {
+                cout << "Mismatch at [" << i << "][" << j << "]: "
+                    << MatrixA[i][j] << " != " << MatrixB[i][j] << endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 int main()
 {
     int** MatrixA = nullptr;
@@ -105,37 +119,54 @@ int main()
     InitArray(MatrixA, NUM_ROWS_A, NUM_COLS_A);
     InitArray(MatrixB, NUM_ROWS_B, NUM_COLS_B);
 
-    cout << "Evaluating Sequential Task" << endl;
-    chrono::duration<double> Seq_Time(0);
+    cout << "Evaluating Sequential Task" << endl;    
+    chrono::duration<double> Seq_Time(0), Par_Time(0);
+
     auto startTime = chrono::high_resolution_clock::now();
     sequential_matrix_multiply(MatrixA, NUM_ROWS_A, NUM_COLS_A,
-        MatrixB, NUM_ROWS_B, NUM_COLS_B,
-        Result);
+        MatrixB, NUM_ROWS_B, NUM_COLS_B, Result);
     Seq_Time = chrono::high_resolution_clock::now() - startTime;
+
+    cout << "Evaluating Parallel Task" << endl;
+
+    startTime = chrono::high_resolution_clock::now();
+    parallel_matrix_multiply(MatrixA, NUM_ROWS_A, NUM_COLS_A,
+        MatrixB, NUM_ROWS_B, NUM_COLS_B, ParallelResult);
+    Par_Time = chrono::high_resolution_clock::now() - startTime;
 
     /*
     DisplayArray(MatrixA, NUM_ROWS_A, NUM_COLS_A);
-    cout << endl << endl;
+    cout << endl;
     DisplayArray(MatrixB, NUM_ROWS_B, NUM_COLS_B);
-    cout << endl << endl;
+    cout << endl;
     DisplayArray(Result, NUM_ROWS_A, NUM_COLS_B);
+    cout << endl;
+    DisplayArray(ParallelResult, NUM_ROWS_A, NUM_COLS_B);
+    cout << endl;
     */
+
+    cout << (compare_matrices(Result, ParallelResult, NUM_ROWS_A, NUM_COLS_B) ? "Results match!" : "Results do NOT match!") << endl;
 
     cout << "FINAL RESULTS" << endl;
     cout << "=============" << endl;
-    cout << "Sequential Processing took: " << Seq_Time.count() * 1000 << " ms" << endl;
+    cout << "Sequential Processing took: " << Seq_Time.count() * 1000 << "ms" << endl;
+    cout << "Parallel Processing took: " << Par_Time.count() * 1000 << "ms" << endl;
+    cout << "Speedup: " << Seq_Time / Par_Time << "\n";
+    cout << "Efficiency: " << (Seq_Time / Par_Time) / NUM_THREADS << "\n";
 
-	// Free allocated memory
+    // Free allocated memory
     for (unsigned int i = 0; i < NUM_ROWS_A; i++) {
         delete[] MatrixA[i];
         delete[] Result[i];
-	}
-	delete[] MatrixA;
-	delete[] Result;
+        delete[] ParallelResult[i];
+    }
     for (unsigned int i = 0; i < NUM_ROWS_B; i++) {
-		delete[] MatrixB[i];
-	}
-	delete[] MatrixB;
+        delete[] MatrixB[i];
+    }
+    delete[] MatrixA;
+    delete[] MatrixB;
+    delete[] Result;
+    delete[] ParallelResult;
 
     return 0;
 }
