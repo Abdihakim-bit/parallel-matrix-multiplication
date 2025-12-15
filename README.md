@@ -5,6 +5,9 @@ This repository contains an implementation of matrix multiplication using **para
 ## Overview
 
 This project implements parallel matrix multiplication using C++ threads. The goal is to improve performance over a sequential approach by dividing the task across multiple threads.
+The **speedup** and **efficiency** of the parallel solution are also calculated. 
+- **Speedup** = sequential execution time / parallel execution time  
+- **Efficiency** = speedup / number of threads used
 
 ## How to Run
 
