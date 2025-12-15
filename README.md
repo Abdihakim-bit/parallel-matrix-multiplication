@@ -18,7 +18,9 @@ This project implements parallel matrix multiplication using C++ threads. The go
 
 3. Run the parallel matrix multiplication:
     - In **Visual Studio**, simply use the **Local Windows Debugger** to run it.
+      
     - To run from terminal, ensure you have `g++` installed, then run:
+      
     ```bash
     g++ parallel_multiplication.cpp -o parallel_multiplication
     ./parallel_multiplication
