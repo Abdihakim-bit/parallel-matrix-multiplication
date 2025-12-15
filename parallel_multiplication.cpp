@@ -1,12 +1,16 @@
 #include <iostream>
 #include <cmath>
 #include <chrono>
+#include <thread>
+#include <vector>
+
 using namespace std;
 
 const unsigned int NUM_ROWS_A = 1000;
 const unsigned int NUM_COLS_A = 1000;
 const unsigned int NUM_ROWS_B = NUM_COLS_A;
 const unsigned int NUM_COLS_B = 1000;
+unsigned int NUM_THREADS = 4; // You can adjust this value based on your system by using std::thread::hardware_concurrency()
 
 void InitArray(int**& Matrix, unsigned int Rows, unsigned int Cols) {
     Matrix = new int* [Rows];
@@ -48,16 +52,46 @@ void sequential_matrix_multiply(int** Matrix_A, unsigned int num_rows_a, unsigne
     }
 }
 
+//Matrix Multiplication from start_row till end_row
+void  parallel_helper(int** Matrix_A, unsigned int start_row, unsigned int end_row, unsigned int num_cols_a,
+    int** Matrix_B, unsigned int num_rows_b, unsigned int num_cols_b,
+    int** Result) {
+
+}
+
+//Divide rows among the threads and call helper function to do the multiplication
+void parallel_matrix_multiply(int** Matrix_A, unsigned int num_rows_a, unsigned int num_cols_a,
+    int** Matrix_B, unsigned int num_rows_b, unsigned int num_cols_b,
+    int** Result) {
+    vector<thread> threads(NUM_THREADS);
+    unsigned int start_row = 0;
+    unsigned int rows_per_thread = num_rows_a / NUM_THREADS;
+
+    for (unsigned int i = 0; i < NUM_THREADS; i++) {
+        unsigned int end_row = start_row + rows_per_thread + (i < num_rows_a % NUM_THREADS ? 1 : 0);
+        threads[i] = thread(parallel_helper, Matrix_A, start_row, end_row, num_cols_a,
+            Matrix_B, num_rows_b, num_cols_b, Result);
+        start_row = end_row;
+    }
+
+    for (unsigned int i = 0; i < threads.size(); i++) {
+        threads[i].join();
+    }
+}
+
 int main()
 {
     int** MatrixA = nullptr;
     int** MatrixB = nullptr;
     int** Result = nullptr;
+    int** ParallelResult = nullptr;
 
     //Allocate data for the resulting arrays
     Result = new int* [NUM_ROWS_A];
+    ParallelResult = new int* [NUM_ROWS_A];
     for (unsigned int i = 0; i < NUM_ROWS_A; i++) {
         Result[i] = new int[NUM_COLS_B];
+        ParallelResult[i] = new int[NUM_COLS_B];
     }
 
     InitArray(MatrixA, NUM_ROWS_A, NUM_COLS_A);
