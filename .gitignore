@@ -1,0 +1,61 @@
+# Compiled executables
+*.exe
+*.out
+*.app
+parallel_multiplication
+parallel_multiplication.exe
+
+# Object files
+*.o
+*.obj
+
+# Compiled libraries
+*.lib
+*.a
+*.dll
+*.so
+*.dylib
+
+# Visual Studio files
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+x64/
+x86/
+Debug/
+Release/
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio Code
+.vscode/
+
+# Build directories
+build/
+cmake-build-*/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE-specific
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Profiling/Debug data
+*.pdb
+*.ilk
+*.log
